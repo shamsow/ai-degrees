@@ -1,0 +1,56 @@
+ul {
+    align-content: center;
+    align-items: center;
+    counter-reset: stepCount;
+    display: flex;
+    justify-content: space-around;
+    /* margin: 10vh auto 20vh; */
+  }
+  
+  li {
+    background: #4cdbff;
+    color: white;
+    content: ' ';
+    display: flex;
+    flex-grow: 1;
+    height: .3em;
+    line-height: 1em;
+    margin: 0;
+    position: relative;
+    text-align: right;
+    z-index: 2;
+  }
+  
+  li::before {
+    background: #1ab3da;
+    border-radius: 50%;
+    color: white;
+    content: counter(stepCount);
+    counter-increment: stepCount;
+    height: 2em;
+    left: -2em;
+    line-height: 2em;
+    position: absolute;
+    text-align: center;
+    top: -.85em;
+    width: 2em;
+  }
+  
+  /* li.active {
+    background-color: lightblue;
+  }
+  
+  li.active~li {
+    background-color: lightblue;
+  }
+  
+  li.active~li::before {
+    background-color: lightblue;
+  } */
+  
+  li:last-child {
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: 0;
+  /* Shorthand: flex: 0 1 0; */
+  }
