@@ -159,18 +159,20 @@ class Data():
 
 
     def check_names(self, name1, name2):
-        res = []
-        if name1 in self.names:
-            res.append(True)
-        else:
-            res.append(False)
+        # res = []
+        # if name1 in self.names:
+        #     res.append(True)
+        # else:
+        #     res.append(False)
         
-        if name2 in self.names:
-            res.append(True)
-        else:
-            res.append(False)
+        # if name2 in self.names:
+        #     res.append(True)
+        # else:
+        #     res.append(False)
 
-        return res
+        check1 = name1 in self.names
+        check2 = name2 in self.names
+        return (check1, check2)
 
 
     def shortest_path(self, source, target):
@@ -194,21 +196,26 @@ class Data():
         person_ids = list(self.names.get(name.lower(), set()))
         if len(person_ids) == 0:
             return None
-        # elif len(person_ids) > 1:
-        #     return person_ids[0]
-        #     print(f"Which '{name}'?")
-        #     for person_id in person_ids:
-        #         person = self.people[person_id]
-        #         name = person["name"]
-        #         birth = person["birth"]
-        #         print(f"ID: {person_id}, Name: {name}, Birth: {birth}")
-        #     try:
-        #         person_id = input("Intended Person ID: ")
-        #         if person_id in person_ids:
-        #             return person_id
-        #     except ValueError:
-        #         pass
-        #     return None
+        elif len(person_ids) > 1:
+            # return person_ids[0]
+            print(f"Which '{name}'?")
+
+            res = []
+            for person_id in person_ids:
+                person = self.people[person_id]
+                name = person["name"]
+                birth = person["birth"]
+                print(f"ID: {person_id}, Name: {name}, Birth: {birth}")
+                res.append((f"Name: {name}, Birth: {birth}", person_id))
+            return res
+
+            # try:
+            #     person_id = input("Intended Person ID: ")
+            #     if person_id in person_ids:
+            #         return person_id
+            # except ValueError:
+            #     pass
+            # return None
         else:
             return person_ids[0]
     

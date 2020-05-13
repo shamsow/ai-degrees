@@ -13,25 +13,40 @@ def validate_name(request):
     actor1 = request.GET.get('actor1', None).lower()
     actor2 = request.GET.get('actor2', None).lower()
     valid1, valid2 = data.check_names(actor1, actor2)
+
+    source = data.person_id_for_name(actor1)
+    target = data.person_id_for_name(actor2)
+
+    choices = {}
+    if isinstance(source, list):
+        choices[actor1] = source
+
+    if isinstance(target, list):
+        choices[actor2] = target
+
+
     context = {
         'actor1_isValid': valid1,
-        'actor2_isValid': valid2
+        'actor2_isValid': valid2,
+        'choices': choices,
+        'id1': source,
+        'id2': target
     }
     return JsonResponse(context)
 
 
 def find_path(request):
     # get actor names from ajax request
-    actor1 = request.GET.get('actor1', None).lower()
-    actor2 = request.GET.get('actor2', None).lower()
+    actor1 = request.GET.get('actor1', None)
+    actor2 = request.GET.get('actor2', None)
     # print current task
     print("Finding path:", actor1, actor2)
     # get ids for actors
-    source = data.person_id_for_name(actor1)
-    target = data.person_id_for_name(actor2)
+    # source = data.person_id_for_name(actor1)
+    # target = data.person_id_for_name(actor2)
     # find shortest path
-    path = data.shortest_path(source, target)
-    
+    path = data.shortest_path(actor1, actor2)
+    print(path)
     # send results to page
     res = {}
     degrees = 0
@@ -40,7 +55,7 @@ def find_path(request):
     else:
         degrees = len(path)
         print(f"{degrees} degree(s) of separation.")
-        path = [(None, source)] + path
+        path = [(None, actor1)] + path
         for i in range(degrees):
             person1 = data.person_name_for_id(path[i][1])
             person2 = data.person_name_for_id(path[i + 1][1])
