@@ -2,7 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 
 from helper import Data
-data = Data()
+
+# use Data(drop=True) for faster data loading for testing purposes
+data = Data(drop=True)
 
 # Create your views here.
 def index(request):
@@ -17,6 +19,7 @@ def validate_name(request):
     source = data.person_id_for_name(actor1)
     target = data.person_id_for_name(actor2)
 
+    # if name returns multiple actors, format and send data
     choices = {}
     if isinstance(source, list):
         choices[actor1] = source
@@ -41,12 +44,10 @@ def find_path(request):
     actor2 = request.GET.get('actor2', None)
     # print current task
     print("Finding path:", actor1, actor2)
-    # get ids for actors
-    # source = data.person_id_for_name(actor1)
-    # target = data.person_id_for_name(actor2)
+
     # find shortest path
     path = data.shortest_path(actor1, actor2)
-    print(path)
+    # print(path)
     # send results to page
     res = {}
     degrees = 0

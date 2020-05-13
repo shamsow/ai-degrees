@@ -8,7 +8,7 @@ ul {
   }
   
   li {
-    background: #4cdbff;
+    background: #2ea2d8;
     color: white;
     content: ' ';
     display: flex;
@@ -22,7 +22,7 @@ ul {
   }
   
   li::before {
-    background: #1ab3da;
+    background: #2ea2d8;
     border-radius: 50%;
     color: white;
     content: counter(stepCount);
@@ -35,22 +35,24 @@ ul {
     top: -.85em;
     width: 2em;
   }
-  
-  /* li.active {
-    background-color: lightblue;
+ 
+  li:first-child::before {
+    background: #0b6ba3;
   }
-  
-  li.active~li {
-    background-color: lightblue;
+  li:last-child::before {
+    background: #0b6ba3;
   }
-  
-  li.active~li::before {
-    background-color: lightblue;
-  } */
-  
   li:last-child {
     flex-grow: 0;
     flex-shrink: 1;
     flex-basis: 0;
   /* Shorthand: flex: 0 1 0; */
+  }
+
+  .card {
+    transition: all 300ms ease-in-out;
+  }
+  .card:hover {
+    box-shadow: 0px 20px 10px -20px rgba(0,0,0,0.2);
+    transform: scale(1.012);
   }

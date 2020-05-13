@@ -2,15 +2,11 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-<div class="container mx-auto mt-5 bg-light rounded p-4">
+<div class="container shadow mx-auto mt-5 bg-light rounded p-4">
   <button type="button" class="close" data-toggle="modal" data-target="#infoModal" aria-label="Close">
     <span aria-hidden="true">&#10067</span>
   </button>
-  <h1 class="text-monospace text-center p-3">Degrees </h1> 
-
-  
-    
-    
+  <h1 class="text-monospace text-center p-3">Degrees</h1>     
     <hr></hr>
     <div class="container form-group">
         <form>
@@ -19,15 +15,15 @@
                 
                 <div class="col ml-5">
                     <label for="actor1">First Actor</label>
-                    <input class="form-control" name="actor1" id="actor1" value="Chris Pratt" required/>
+                    <input class="form-control form-control-lg" name="actor1" id="actor1" value="Chris Pratt" required/>
                 </div>
                 <div class="col ml-5">
                     <label for="actor2">Second Actor</label>
-                    <input class="form-control" name="actor2" id="actor2" value="Jennifer Lawrence" required/>
+                    <input class="form-control form-control-lg" name="actor2" id="actor2" value="Jennifer Lawrence" required/>
                 </div>
                 <div class="col">
                   <br>
-                    <button type="button" class="mt-2 btn btn-dark align-middle" id="path_button">Get path</button>
+                    <button type="button" class="mt-2 btn btn-dark align-middle btn-lg" id="path_button">Get path</button>
                 </div>
             </div>
         </form>
