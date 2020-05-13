@@ -1,11 +1,12 @@
 var resArea = $('#resultsArea');
 var modTitle = $('#choiceModal #choiceModalTitle');
 var modBody = $('#choiceModal .modal-body #inputActor');
+var modFooter = $('#choiceModal .modal-footer');
 var mod = $('#choiceModal');
 
 function shortest_path(act1, act2) {
   mod.modal('hide');
-  
+
   resArea.empty();
   resArea.append(`<h3 class="text-secondary text-center" >AI is thinking..</h3>`);
 
@@ -35,11 +36,9 @@ function shortest_path(act1, act2) {
 
       resArea.append(`<ul class="m-4" id="degrees_line">${points}</ul>`)
 
-      // degreesLine.css("display", "block")
-
+      // display results
       var i;
       for (i = 0; i < degrees; i++) {
-        
         resArea.append(`
         <div class="card m-3 mx-auto w-100">
           <div class="card-body">
@@ -50,6 +49,7 @@ function shortest_path(act1, act2) {
         </div>
         `);
       };
+      // enable the button again
       $('#path_button').prop('disabled', false);
     }
   });
@@ -60,9 +60,15 @@ function updateID () {
     return id;
     
 };
-function createPrompt (actor, data) {
+function createPrompt (actor, data, identity) {
+    modBody.empty();
+    modFooter.empty();
     modTitle.text(`Which ${actor}?`);
-    modBody.empty()
+    // button has to recreated since we don't want the click event listener for previous modal dialog to also be fired 
+    modFooter.append(`
+      <button type="button" id="${identity}" class="btn btn-dark">Confirm</button>
+    `)
+    
     var i;
     for (i = 0; i < data.length; i++) {
       modBody.append(`
@@ -83,15 +89,12 @@ $("#path_button").click(function () {
     var actor1= input1.val().toLowerCase();
     var actor2= input2.val().toLowerCase();
 
-    
-    
-
-
     input1.removeClass('is-invalid')
     input2.removeClass('is-invalid')
 
-    // console.log(actor1);
-    // console.log(actor2);
+    console.log(actor1);
+    console.log(actor2);
+
     $.ajax({
       url: 'ajax/validate_name',
       data: {
@@ -100,143 +103,80 @@ $("#path_button").click(function () {
       },
       dataType: 'json',
       success: function (data) {
+        console.log(data)
         let id1 = data['id1'];
         let id2 = data['id2'];
         
-        
         var choices = data['choices'];
-        // console.log(choices);
-        
-
+        // make sure both names are valid
         if (data.actor1_isValid && data.actor2_isValid) {
+          // disable the button until the path has been found to avoid multiple clicks
           $('#path_button').prop('disabled', true);
-          
-
-
+          // check if multiple actor logs exist for the same name
           if (!jQuery.isEmptyObject(choices)) {
-            
-            
 
+            // clarify the identity of the actor
             if (typeof choices[actor1] !== 'undefined') {
-              createPrompt(actor1, choices[actor1])
+              createPrompt(actor1, choices[actor1], 'actor1Choice');
 
-              $('#actorChoice').click(function () {
+              $('#actor1Choice').click(function () {
                 id1 = updateID()
 
                 if (typeof choices[actor2] !== 'undefined') {
-                  createPrompt(actor2, choices[actor2])
+                  createPrompt(actor2, choices[actor2], 'actor2Choice');
 
-                $('#actorChoice').click(function () {
-                  console.log('second')
-                  id2 = updateID()
+                  $('#actor2Choice').click(function () {
+                    console.log('second')
+                    id2 = updateID()
 
-                  shortest_path(id1, id2)
-
-                });
+                    shortest_path(id1, id2);
+                  });
                 }
                 else {
-                  shortest_path(id1, id2)
+                  shortest_path(id1, id2);
                 }
-                // console.log(id1)
               });
+            }
+            else if (typeof choices[actor2] !== 'undefined') {
+              createPrompt(actor2, choices[actor2], 'actor2Choice');
 
-              if (typeof choices[actor2] !== 'undefined') {
-                createPrompt(actor2, choices[actor2])
-  
-                $('#actorChoice').click(function () {
-                  id2 = updateID()
-  
-                  if (typeof choices[actor1] !== 'undefined') {
-                    createPrompt(actor1, choices[actor1])
-  
-                  $('#actorChoice').click(function () {
+              $('#actor2Choice').click(function () {
+                id2 = updateID();
+
+                if (typeof choices[actor1] !== 'undefined') {
+                  createPrompt(actor1, choices[actor1], 'actor1Choice');
+
+                  $('#actor1Choice').click(function () {
                     console.log('second')
                     id1 = updateID()
-  
-                    shortest_path(id1, id2)
-  
+
+                    shortest_path(id1, id2);
                   });
-                  }
-                  else {
-                    shortest_path(id1, id2)
-                  }
-                  // console.log(id1)
-                });
+                }
+                else {
+                  shortest_path(id1, id2);
+                }
+              });
+            }
 
-              // modTitle.text(`Which ${actor1}?`);
-
-              // var i;
-              // for (i = 0; i < choices[actor1].length; i++) {
-              //   // modBody.append(`<p> ${choices[actor1][i]} </p>`);
-              //   modBody.append(`
-              //     <option value="${choices[actor1][i][1]}">${choices[actor1][i][0]}</option>
-              //   `)
-              // };
-
-              // mod.modal({
-              //   backdrop: 'static'
-              // });
-
-              // $('#actorChoice').click(function () {
-
-              //   console.log($('#inputActor option:selected').val());
-              //   id1 = $('#inputActor option:selected').val();
-
-              // });
-              // console.log('here')
-              // id1 = updateID(actor1, choices[actor1]);
-              
-              // console.log('done')
-
-            };
-
-            // if (typeof choices[actor2] !== 'undefined') {
-            //   modTitle.text(`Which ${actor2}?`);
-
-            //   var i;
-            //   for (i = 0; i < choices[actor2].length; i++) {
-            //     // modBody.append(`<p> ${choices[actor2][i]} </p>`);
-            //     modBody.append(`
-            //       <option value="${choices[actor2][i][1]}">${choices[actor2][i][0]}</option>
-            //     `)
-            //   };
-
-            //   mod.modal({
-            //     backdrop: 'static'
-            //   });
-
-            //   $('#actorChoice').click(function () {
-            //     console.log($('#inputActor option:selected').val());
-            //     id2 = $('#inputActor option:selected').val();
-
-            //   });
-            // };
-
-            
-            // console.log(id2);
           }
+          // otherwise proceed to get the path
           else {
-            shortest_path(id1, id2)
-          }
-          
-          // console.log(id1);
-          // shortest_path(id1, id2);
-
+            shortest_path(id1, id2);
+          };
+        
         }
 
         else {
-            
+            // show user which actor name is invalid
             if (!data.actor1_isValid) {
-              // document.getElementById('actor1').classList.add('is-invalid')
               input1.addClass('is-invalid');
             }
             if (!data.actor2_isValid) {
-              // document.getElementById('actor2').classList.add('is-invalid')
               input2.addClass('is-invalid');
             }
         }
       }
 
-    }
     });
   });
