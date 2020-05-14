@@ -54,6 +54,7 @@ class Degree():
         self.movies = movies
     
     def options(self, person_id):
+        """Returns the set of people that have a movie common with supplied actor"""
         movie_ids = self.people[person_id]["movies"]
         neighbors = set()
         for movie_id in movie_ids:
@@ -62,6 +63,7 @@ class Degree():
         return neighbors
 
     def solve(self):
+        """"Finds the path between source and target"""
         # Initialize frontier to just the source actor
         start = Node(state=self.start, parent=None, action=None)
         frontier = QueueFrontier()
@@ -103,30 +105,25 @@ class Degree():
                     frontier.add(child)
 
 
-# Maps names to a set of corresponding person_ids
-# names = {}
-
-# Maps person_ids to a dictionary of: name, birth, movies (a set of movie_ids)
-# people = {}
-
-# Maps movie_ids to a dictionary of: title, year, stars (a set of person_ids)
-# movies = {}
-
 class Data():
     names = {}
     people = {}
     movies = {}
     directory = 'data/large'
 
-    def __init__(self):
+    def __init__(self, drop=False):
         """
-        Load data from CSV files into memory.
+        Load data from CSV files into memory when object is initialised
         """
         # Load people
         with open(f"{self.directory}/people.csv", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             # print([i["name"] for i in reader])
             for row in tqdm(reader, desc="Loading people"):
+                if drop:
+                    # ignore the rows that don't contain birth data for the actor to avoid loading duplicates
+                    if row["birth"] == '':
+                        continue
                 self.people[row["id"]] = {
                     "name": row["name"],
                     "birth": row["birth"],
@@ -159,17 +156,6 @@ class Data():
 
 
     def check_names(self, name1, name2):
-        # res = []
-        # if name1 in self.names:
-        #     res.append(True)
-        # else:
-        #     res.append(False)
-        
-        # if name2 in self.names:
-        #     res.append(True)
-        # else:
-        #     res.append(False)
-
         check1 = name1 in self.names
         check2 = name2 in self.names
         return (check1, check2)
@@ -197,9 +183,7 @@ class Data():
         if len(person_ids) == 0:
             return None
         elif len(person_ids) > 1:
-            # return person_ids[0]
             print(f"Which '{name}'?")
-
             res = []
             for person_id in person_ids:
                 person = self.people[person_id]
@@ -208,14 +192,6 @@ class Data():
                 print(f"ID: {person_id}, Name: {name}, Birth: {birth}")
                 res.append((f"Name: {name}, Birth: {birth}", person_id))
             return res
-
-            # try:
-            #     person_id = input("Intended Person ID: ")
-            #     if person_id in person_ids:
-            #         return person_id
-            # except ValueError:
-            #     pass
-            # return None
         else:
             return person_ids[0]
     
@@ -226,4 +202,7 @@ class Data():
         return self.people[id]["name"]
     
     def movie_title_for_id(self, id):
+        """
+        Returns the title for a movie's IMDB id
+        """
         return self.movies[id]["title"]

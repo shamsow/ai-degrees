@@ -27,10 +27,10 @@ function shortest_path(act1, act2) {
       
       console.log(path)
 
-      resArea.append(`<h3 class="text-secondary text-center mb-2" >${degrees} Degrees of Separation</h3>`)
+      resArea.append(`<h3 class="text-secondary text-center mb-2" >${degrees} Degree(s) of Separation</h3>`)
       var j;
       var points = '';
-      for (j = 0; j < degrees; j++) {
+      for (j = 0; j < degrees + 1; j++) {
           points = points.concat('<li></li>')
       };
 
