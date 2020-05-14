@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from helper import Data
 
 # use Data(drop=True) for faster data loading for testing purposes
-data = Data(drop=True)
+data = Data()
 
 # Create your views here.
 def index(request):
